@@ -968,3 +968,22 @@ difftime(
 # To generate sequences of date-times use seq.POSIXt() or simply seq
 
 ## Section 14.3: Parsing strings into date-time objects ----
+
+as.POSIXct("11:38", # time string
+           format = "%H:%M") # formatting string
+
+strptime("11:38", # identical, but makes a POSIXlt object
+         format = "%H:%M")
+
+as.POSIXct("11 AM",
+           format = "%I %p")
+
+# Note that date and timezone are imputed.
+as.POSIXct("11:38:22", # time string without timezone
+           format = "%H:%M:%S",
+           tz = "America/New_York") # set time zone
+
+as.POSIXct("2016-07-21 00:00:00",
+           format = "%F %T") # shortcut tokens for "%Y-%m-%d" and "%H:%M:%S"
+
+
