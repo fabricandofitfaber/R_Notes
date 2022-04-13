@@ -930,3 +930,41 @@ format(d,"%z") # Signed offset
 
 format(d,"%Z") # Time Zone Abbreviation
 
+# See ?strptime for details on the format strings here, as well as other formats
+
+## Section 14.2: Date-time arithmetic ----
+
+## adding/subtracting times - 60 seconds
+as.POSIXct("2016-01-01") + 60
+
+## adding 3 hours, 14 minutes, 15 seconds
+as.POSIXct("2016-01-01") + ( (3 * 60 * 60) + (14 * 60) + 15)
+
+## Günde 5 saat R çalışması ile toplam 10 bin saat çalışabilmek için,
+## 2 bin gün geçmesi gerekiyor. 2000 gün sonra hangi tarihte olacağız.
+
+as.POSIXct(Sys.time()) + 2000*24*60*60
+
+as.POSIXct("2016-01-01") +
+  as.difftime(3, units="hours") +
+  as.difftime(14, units="mins") +
+  as.difftime(15, units="secs")
+
+# using POSIXct objects
+difftime(
+  as.POSIXct("2016-01-01 12:00:00"),
+  as.POSIXct("2016-01-01 11:59:59"),
+  unit = "secs")
+# Time difference of 1 secs
+
+## Doğum tarihimden bugüne ne kadar (gün) geçti?
+
+difftime(
+  as.POSIXct(Sys.time()),
+  as.POSIXct("1986-10-27 14:00"),
+  unit = "days"
+)
+
+# To generate sequences of date-times use seq.POSIXt() or simply seq
+
+## Section 14.3: Parsing strings into date-time objects ----
