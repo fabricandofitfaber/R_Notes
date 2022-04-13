@@ -12,7 +12,7 @@ help("paste") #OR
 
 data() ## verisetlerini g?sterir.
 
-data(package = .packages(all.available = TRUE)) ## T?m verisetlerini g?sterir.
+data(package = .packages(all.available = TRUE)) ## Tüm verisetlerini gösterir.
 
 
 data("PlantGrowth") ## Loads the example dataset
