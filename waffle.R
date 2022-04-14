@@ -45,9 +45,9 @@ xdf %>%
 
 
 df <- data.frame(
-  neden = c("1 İş bulma ümidi olmayanlar", "2 İşbaşı yapabilecek olup iş aramayanlar", 
-            "3 İş arayıp işbaşı yapamayacak olanlar", "4 Ev işleriyle meşgul", 
-            "5 Eğitim", "6 Emekli", "7 Çalışamaz halde", "8 Diğer"),
+  neden = c("8 İş bulma ümidi olmayanlar", "7 İşbaşı yapabilecek olup iş aramayanlar", 
+            "6 İş arayıp işbaşı yapamayacak olanlar", "5 Ev işleriyle meşgul", 
+            "4 Eğitim", "3 Emekli", "2 Çalışamaz halde", "1 Diğer"),
   değer = c(17, 16, 1, 9.9, 4.8, 5, 5, 3))
 
 ## Örnek ----
@@ -56,6 +56,9 @@ df %>%
   ggplot(aes(fill = neden, values = değer)) +
   geom_waffle(n_rows = 10, size = 0.33, colour = "white", flip = TRUE,
               make_proportional = TRUE) +
+  scale_fill_manual(values = c("purple4", "green", "steelblue3", 
+                               "darkorange", "pink4", "goldenrod1",
+                               "grey30", "black")) +
   # scale_fill_manual(
   #   name = NULL,
   #   values = c("#a40000", "#c68958", "#ae6056"),
