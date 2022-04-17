@@ -132,3 +132,27 @@ p <- dt_rand %>%
 gt <- ggplot_gtable(ggplot_build(p))
 gt$layout$clip[gt$layout$name == "panel"] <- "off"
 grid.draw(gt)
+
+# Example 3
+
+library(tidyverse)
+
+AMSsurvey <- read.csv("AMSsurvey.csv")
+
+dt_AMS <- AMSsurvey %>%
+  group_by(type, sex) %>%                        
+  summarise(counted = sum(count)) %>% 
+  ungroup() %>% 
+  mutate(type = fct_relevel(
+  type, 
+  rev(c("I(Pu)", "I(Pr)", "II", "III", "IV", "Va")))
+  ) %>% 
+  mutate(sex = fct_relevel(
+    sex,
+    c("Male", "Female"))) %>% 
+  ggplot(aes(type, counted, label = sex)) +
+  geom_chicklet(aes(fill = sex), position = ggplot2::position_fill()) +
+  scale_fill_manual(values = c("#222831", "#30475e")) +
+  coord_flip()
+
+
