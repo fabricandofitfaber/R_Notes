@@ -1067,7 +1067,7 @@ x > 6 || stop("X is too small")
 
 x > 3 || stop("X is too small")
 
-# Section 17.2: Coercion ----
+## Section 17.2: Coercion ----
 
 x <- 2
 z <- x > 4
@@ -1076,4 +1076,48 @@ z
 class(x)
 
 as.logical(2)
+
+## Section 17.3: Interpretation of NAs ----
+
+TRUE & NA
+
+FALSE & NA
+
+TRUE || NA
+
+FALSE || NA
+
+# Chapter 18: Data frames ----
+
+structure(list(character()), class = "data.frame")
+
+structure(list(a = 1:3, b = letters[1:3]), class = "data.frame")
+
+structure(list(a = 1:3, b = letters[1:3]), class = "data.frame", row.names = 1:3)
+
+x <- structure(list(a = numeric(3), b = character(3)), class = "data.frame", row.names = 1:3)
+nrow(x)
+
+ncol(x)
+
+dim(x)
+
+str(data.frame("a a a" = numeric(3), "b-b-b" = character(3)))
+
+m <- matrix(letters[1:9], nrow = 3)
+m
+
+as.data.frame(m)
+
+str(as.data.frame(m))
+
+## Section 18.2: Subsetting rows and columns from a data frame ----
+
+# Like a matrix with single brackets data[rows, columns]
+# Using row and column numbers
+# Using column (and row) names
+# Like a list:
+#   With single brackets data[columns] to get a data frame
+# With double brackets data[[one_column]] to get a vector
+# With $ for a single column data$column_name
 
