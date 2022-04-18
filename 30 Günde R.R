@@ -1121,3 +1121,21 @@ str(as.data.frame(m))
 # With double brackets data[[one_column]] to get a vector
 # With $ for a single column data$column_name
 
+# get the first row
+mtcars[1, ]
+# get the first five rows
+mtcars[1:5, ]
+
+# get the first column
+mtcars[, 1]
+# get the first, third and fifth columns:
+mtcars[, c(1, 3, 5)]
+
+# get the mpg column
+mtcars[, "mpg"]
+# get the mpg, cyl, and disp columns
+mtcars[, c("mpg", "cyl", "disp")]
+
+AMSsurvey[,c("sex", "citizen")] # Example
+
+mtcars["Mazda Rx4", ]
