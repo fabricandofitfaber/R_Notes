@@ -1,5 +1,9 @@
 # Chapter 1: Getting started with R Language ----
 
+## Alt+O ile tüm sekmler kapatılır.
+
+## https://support.rstudio.com/hc/en-us/articles/200484568-Code-Folding-and-Sections-in-the-RStudio-IDE
+
 ## Section 1.3: Getting Help ----
 
 #For help on the help function of R
@@ -986,4 +990,8 @@ as.POSIXct("11:38:22", # time string without timezone
 as.POSIXct("2016-07-21 00:00:00",
            format = "%F %T") # shortcut tokens for "%Y-%m-%d" and "%H:%M:%S"
 
+
+# Chapter 15: The character class ----
+
+## Section 15.1: Coercion ----
 
