@@ -995,3 +995,85 @@ as.POSIXct("2016-07-21 00:00:00",
 
 ## Section 15.1: Coercion ----
 
+x <- "The quick brown fox jumps over the lazy dog"
+class(x)
+
+is.character(x)
+
+as.numeric("2")
+
+as.numeric("fox")
+
+# Chapter 16: Numeric classes and storage modes ----
+
+x <- 12.3
+y <- 12L
+#confirm types
+typeof(x)
+
+typeof(y)
+
+# confirm both numeric
+is.numeric(x)
+
+is.numeric(y)
+
+# logical to numeric
+as.numeric(TRUE)
+
+# While TRUE == 1, it is a double and not an integer
+is.integer(as.numeric(TRUE))
+
+is.double(1)
+
+is.double(1.0)
+
+is.double(1L)
+
+typeof(1)
+
+class(1)
+
+typeof(1L)
+
+class(1L)
+
+# test speed on lots of arithmetic
+microbenchmark(
+  for( i in 1:100000){
+    2L * i
+    10L + i
+  },
+  for( i in 1:100000){
+    2.0 * i
+    10.0 + i
+  }
+)
+
+# Chapter 17: The logical class ----
+
+## Section 17.1: Logical operators ----
+
+# Logical Operator Meaning Syntax
+# ! Not !x
+# & element-wise (vectorized) and x & y
+# && and (single element only) x && y
+# | element-wise (vectorized) or x | y
+# || or (single element only) x || y
+# xor element-wise (vectorized) exclusive OR xor(x,y)
+
+x <- 5
+x > 6 || stop("X is too small")
+
+x > 3 || stop("X is too small")
+
+# Section 17.2: Coercion ----
+
+x <- 2
+z <- x > 4
+z
+
+class(x)
+
+as.logical(2)
+
