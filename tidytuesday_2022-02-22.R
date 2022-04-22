@@ -1,11 +1,17 @@
-# Verisetlerini seçelim. ----
+# Kütüphaneleri yükleyelim ve çağıralım. ----
 
-# library(tidyverse)
-# library(tidytuesdayR)
-# library(scales)
-# theme_set(theme_light())
+# pacman::p_load(tidyverse, tidytuesdayR, scales, 
+#                funModeling, Hmisc, gt, gtsummary)
 
-pacman::p_load(tidyverse, tidytuesdayR, scales)
+library(tidyverse)
+library(tidytuesdayR)
+library(scales)
+library(skimr)
+library(funModeling)
+library(Hmisc)
+library(gt)
+library(gtsummary)
+theme_set(theme_light())
 
 # Haftalık veriyi yükleyelim. ----
 
@@ -13,12 +19,36 @@ pacman::p_load(tidyverse, tidytuesdayR, scales)
 
 # Verinin tanımlayıcı istatistikleri ----
 
+tanımlayıcı_istatistikler <- function(data) {
+  str(data)
+  glimpse(data)
+  df_status(data)
+  freq(data)
+  profiling_num(data)
+  plot_num(data)
+  describe(data)
+  head(data)
+  tail(data)
+  skimr::skim(data)
+}
+
+# df_status(): Her değişken için şunu döndürür: Sıfırların miktarı ve yüzdesi 
+# (sırasıyla q_zeros ve p_zeros).
+
+# profiling_num() :Sayısal olmayan değişkenleri otomatik olarak atlayarak, 
+# tüm sayısal değişkenler için birçok gösterge içeren bir metrik tablosu verir.
+
+# plot_num(): Sayısal değişkenler için tüm histogramları içeren bir çizim alır. 
+# NA değerleri görüntülenmeyecektir.
+
+tanımlayıcı_istatistikler(freedom)
 
 
+# https://www.r-bloggers.com/2018/08/exploratory-data-analysis-in-r-introduction/
 
+freedom <- tt_load("2022-02-22")$freedom 
 
-
-freedom <- tt_load("2022-02-22")$freedom %>%
+freedom <- freedom %>% 
   janitor::clean_names() %>%
   rename(civil_liberties = cl,
          political_rights = pr) %>%
