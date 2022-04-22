@@ -29,6 +29,9 @@ tanımlayıcı_istatistikler <- function(data) {
   describe(data)
   head(data)
   tail(data)
+  colnames(data)
+  rownames(data)
+  summary(data)
   skimr::skim(data)
 }
 
@@ -41,7 +44,7 @@ tanımlayıcı_istatistikler <- function(data) {
 # plot_num(): Sayısal değişkenler için tüm histogramları içeren bir çizim alır. 
 # NA değerleri görüntülenmeyecektir.
 
-tanımlayıcı_istatistikler(freedom)
+gt(tanımlayıcı_istatistikler(freedom)) 
 
 # https://www.r-bloggers.com/2018/08/exploratory-data-analysis-in-r-introduction/
 # http://www.danieldsjoberg.com/gt-and-gtsummary-presentation/#1
