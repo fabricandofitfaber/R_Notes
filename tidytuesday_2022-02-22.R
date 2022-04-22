@@ -53,25 +53,54 @@ freedom <- tt_load("2022-02-22")$freedom
 
 freedom <- freedom %>% 
   janitor::clean_names() %>%
-  rename(civil_liberties = cl,
-         political_rights = pr) %>%
-  mutate(country_code = countrycode::countrycode(country, "country.name", "iso2c"))
-
-freedom_deneme <- freedom %>% 
-  janitor::clean_names() %>% 
   rename(cl = civil_liberties,
-         pr = political_rights) %>% 
+         pr = political_rights) %>%
   mutate(country_code = countrycode::countrycode(country, "country.name", "iso2c"))
 
 # Ülke kodlarına göre bir değişken oluşturmak.
 # https://github.com/vincentarelbundock/countrycode#:~:text=The%20countrycode%20function%20can%20convert,coding%20schemes%20or%20country%20names.
 
+# Bazı soruların yanıtını verisetinden alalım. ----
 # Her bir yılda kaç tane farklı ülke olduğunu bulabiliriz.
 
 freedom %>% count(year, sort = TRUE) %>% 
   arrange(desc(year))
 
-# hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
+# Hangi kıtada ne kadar gözlem olduğuna bakalım.
+
+freedom %>% count(region_name, sort = TRUE) %>% 
+  arrange(desc(n))
+
+# https://bioconnector.github.io/workshops/r-dplyr-homework.html
+# 1.) Kıta başına kaç benzersiz ülke temsil ediliyor?
+# (Hint: group_by then summarize with a call to n_distinct(...)).
+
+freedom %>% group_by(region_name) %>% 
+  summarise(n = n_distinct(country))
+  
+# 2.) Hangi ülkeler 2020'de en az kişisel özgürlüklere ve sivil haklara sahipti?
+# (Hint: filter, arrange, head(n=1))
+
+freedom %>% filter(year == 2020) %>% 
+  arrange(desc(cl, pr)) %>% 
+  head(n = 10)
+
+# 3.) Her kıtada, 2010'larda ortalama kişisel özgürlükler ve politik haklar nasıldı?
+# (Hint: filter, group_by, summarize)
+
+freedom %>% filter(year >= 2010) %>% 
+  group_by(region_name) %>% 
+  summarise(ortalama_cl = mean(cl),
+            ortalama_pr = mean(pr)) %>% 
+  arrange(desc(ortalama_cl, ortalama_pr))
+  
+# 4.) Tüm yıllar boyunca toplam GSYİH'si en yüksek olan 5 ülke hangisidir? 
+# (Hint: Mutate, group_by, summarize, arrange, head(n=5)))
+  
+
+
+
+# Hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
 
 freedom %>% distinct(country, region_name)
 
