@@ -43,8 +43,8 @@ tanımlayıcı_istatistikler <- function(data) {
 
 tanımlayıcı_istatistikler(freedom)
 
-
 # https://www.r-bloggers.com/2018/08/exploratory-data-analysis-in-r-introduction/
+# http://www.danieldsjoberg.com/gt-and-gtsummary-presentation/#1
 
 freedom <- tt_load("2022-02-22")$freedom 
 
