@@ -1138,4 +1138,5 @@ mtcars[, c("mpg", "cyl", "disp")]
 
 AMSsurvey[,c("sex", "citizen")] # Example
 
-mtcars["Mazda Rx4", ]
+mtcars["Mazda RX4", ]
+
