@@ -57,6 +57,15 @@ freedom <- freedom %>%
          political_rights = pr) %>%
   mutate(country_code = countrycode::countrycode(country, "country.name", "iso2c"))
 
+freedom_deneme <- freedom %>% 
+  janitor::clean_names() %>% 
+  rename(cl = civil_liberties,
+         pr = political_rights) %>% 
+  mutate(country_code = countrycode::countrycode(country, "country.name", "iso2c"))
+
+# Ülke kodlarına göre bir değişken oluşturmak.
+# https://github.com/vincentarelbundock/countrycode#:~:text=The%20countrycode%20function%20can%20convert,coding%20schemes%20or%20country%20names.
+
 # Her bir yılda kaç tane farklı ülke olduğunu bulabiliriz.
 
 freedom %>% count(year, sort = TRUE) %>% 
