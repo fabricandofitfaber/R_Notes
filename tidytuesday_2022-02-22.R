@@ -152,8 +152,8 @@ freedom %>% group_by(region_name, country) %>%
   arrange(abs(cor)) %>% 
   head(10)
 
-# 7a.) Hangi ülkeler (Avrupa hariç) en yüksek ortalama politik haklar ve sivil
-# özgürlüklere sahiptir? 
+# 7a.) Hangi ülkeler (Avrupa hariç) "en yüksek" ortalama politik haklar 
+# ve sivil özgürlüklere sahiptir? 
 # (İpucu: Özgürlükler != NF ve PF olduğu yerleri filtreleyelim, 
 
 freedom %>% filter(region_name != "Europe" & status != "F") %>% 
@@ -162,6 +162,27 @@ freedom %>% filter(region_name != "Europe" & status != "F") %>%
             avg_pr = mean(pr)) %>% 
   arrange(avg_cl, avg_pr) %>% 
   head(n = 10)
+
+# 7b.) Hangi ülkeler (sadece Avrupa ve Okyanusya) "en düşük" ortalama  
+# politik haklar ve sivil özgürlüklere sahiptir? 
+# (İpucu: Özgürlükler != F olduğu yerleri filtreleyelim.
+
+freedom %>% filter(region_name == c("Europe", "Oceania") & status != "F") %>% 
+  group_by(region_name, country) %>% 
+  summarise(avg_pr = mean(pr),
+            avg_cl = mean(cl)) %>% 
+  arrange(desc(avg_pr, avg_cl)) %>% 
+  head(n = 10)
+
+
+# Mevcut verilerin bulunduğu yıllar boyunca en tutarlı politik haklar ve  
+# sivil özgürlüklere (yani en düşük standart sapma) sahip üç ülke hangileridir?
+# (Sadece 3,4 ve 5 puana sahip olan ülkeleri filtreleyelim.)
+
+
+
+
+
 
 # Hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
 
