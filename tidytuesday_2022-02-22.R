@@ -278,7 +278,7 @@ kirilgan_besli %>%
   geom_text(aes(label = country), vjust = 1, hjust = 1) +
   expand_limits(x = 0:5 , y = 0:5, size = 0) +
   labs(title = "'Kırılgan Beşli' için Ortalama Kişisel Özgürlükler ve \n Ortalama Politikal Haklar Tablosu",
-       subtitle = "Turkey, Indonesia, India, Brazil, South Africa",
+       subtitle = "(Turkey, Indonesia, India, Brazil, South Africa)",
        caption = "Source: https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-02-22",
        x = "Ortalama Kişisel Özgürlükler",
        y = "Ortalama Politikal Haklar")
