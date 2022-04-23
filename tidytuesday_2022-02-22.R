@@ -94,12 +94,26 @@ freedom %>% filter(year >= 2010) %>%
             ortalama_pr = mean(pr)) %>% 
   arrange(desc(ortalama_cl, ortalama_pr))
   
-# 4.) Tüm yıllar boyunca en yüksek (sivil özgürlükler*politik haklar) sahibi  
+# 4a.) Tüm yıllar boyunca "en az" (sivil özgürlükler + politik haklar) sahibi  
 # olan 5 ülke hangisidir? 
 # (Hint: Mutate, group_by, summarize, arrange, head(n=5)))
    
-freedom %>% mutate(haklar = cl*pr) %>% 
-  group_by()
+freedom %>% mutate(haklar = cl+pr) %>% 
+  group_by(region_name, country) %>% 
+  summarise(total_rights = sum(haklar)) %>% 
+  arrange(desc(total_rights)) %>% 
+  head(n=10)
+
+# 4b.) Tüm yıllar boyunca "en yüksek" (sivil özgürlükler + politik haklar) sahibi  
+# olan 5 ülke hangisidir? 
+# (Hint: Mutate, group_by, summarize, arrange, head(n=5)))
+
+freedom %>% mutate(rights = cl + pr) %>% 
+  group_by(region_name, country) %>% 
+  summarise(total_rights = sum(rights)) %>% 
+  arrange(total_rights) %>% 
+  head(n = 20)
+
 
 
 # Hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
