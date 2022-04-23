@@ -202,7 +202,7 @@ freedom %>% distinct(country, region_name)
 
 # Özet iistatistikleri bir fonksiyon haline getirmek.
 
-summarize_freedom <- function(tbl) {
+summarise_freedom <- function(tbl) {
   tbl %>%
     summarise(n_countries = n(),
               avg_civil_liberties = mean(cl),
@@ -219,8 +219,10 @@ summarize_freedom <- function(tbl) {
 by_region <- freedom %>%
   filter(year == 2020) %>%
   group_by(region_name) %>%
-  summarize_freedom()
+  summarise_freedom()
 
+# Ortalama sivil özgürlükler ve ortalama politik haklar grafiğinde
+# hangi kıta nereye düşüyor? (Kıtalardaki ortalama ülke sayısı nokta büyüklüğü)
 
 by_region %>%
   ggplot(aes(avg_civil_liberties, avg_political_rights)) +
@@ -229,13 +231,61 @@ by_region %>%
   geom_text(aes(label = region_name), vjust = 1, hjust = 1) +
   expand_limits(x = 0, y = 0, size = 0)
 
-freedom %>%
-  ggplot(aes(avg_civil_liberties, avg_political_rights)) +
-  geom_point()
+# Exercise
+# Kırılgan Beşli (Brezilya, Hindistan, Endonezya, Türkiye, Güney Afrika) için
+# ortalama sivil özgürlükler ve ortalama politik haklar grafiği çizelim.
 
+by_turkey <- freedom %>% 
+  filter(country == "Turkey") %>%
+  summarise(avg_pr = mean(pr),
+            avg_cl = mean(cl)) 
+
+by_india <- freedom %>% 
+  filter(country == "India") %>% 
+  summarise(avg_pr = mean(pr),
+            avg_cl = mean(cl)) 
+
+by_indonesia <- freedom %>% 
+  filter(country == "Indonesia") %>% 
+  summarise(avg_pr = mean(pr),
+            avg_cl = mean(cl)) 
+
+by_brazil <- freedom %>% 
+  filter(country == "Brazil") %>% 
+  summarise(avg_pr = mean(pr),
+            avg_cl = mean(cl)) 
+
+by_south_africa <- freedom %>% 
+  filter(country == "South Africa") %>% 
+  summarise(avg_pr = mean(pr),
+            avg_cl = mean(cl)) 
+
+kirilgan_besli <- rbind(by_turkey, by_india, by_indonesia, 
+                        by_brazil, by_south_africa)
+
+kirilgan_besli$country <- c("Turkey", "India", "Indonesia",
+                            "Brazil", "South Africa")
+
+kirilgan_besli <- kirilgan_besli %>% 
+  select(country, avg_pr, avg_cl)
+
+# Şimdi bu beş ülke için görselleştirmemizi yapalım.
+
+kirilgan_besli %>% 
+  ggplot(aes(avg_cl, avg_pr)) + 
+  geom_abline(color = "red") + 
+  geom_point() + 
+  geom_text(aes(label = country), vjust = 1, hjust = 1) +
+  expand_limits(x = 0:5 , y = 0:5, size = 0) +
+  labs(title = "'Kırılgan Beşli' için Ortalama Kişisel Özgürlükler ve \n Ortalama Politikal Haklar Tablosu",
+       subtitle = "Turkey, Indonesia, India, Brazil, South Africa",
+       caption = "Source: https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-02-22",
+       x = "Ortalama Kişisel Özgürlükler",
+       y = "Ortalama Politikal Haklar")
+  
 freedom %>%
   filter(year == 2020) %>%
-  ggplot(aes(civil_liberties, political_rights)) +
+  ggplot(aes(cl, pr)) +
   geom_abline(color = "red") +
   geom_jitter(height = .2, width = .2) +
   # geom_text(aes(label = region_name), vjust = 1, hjust = 1) +
