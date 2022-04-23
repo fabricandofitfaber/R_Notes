@@ -17,6 +17,18 @@ theme_set(theme_light())
 
 # freedom <- tt_load("2022-02-22")$freedom
 
+# Verinin anlamı
+
+# variable	class	description
+# country	character	Country Name
+# year	double	Year
+# CL	double	Civil Liberties
+# PR	double	Political rights
+# Status	character	Status (Free F, Not Free NF, Partially Free PF)
+# Region_Code	double	UN Region code
+# Region_Name	character	UN Region Name
+# is_ldc	double	Is a least developed country (binary 0/1)
+
 # Verinin tanımlayıcı istatistikleri ----
 
 tanımlayıcı_istatistikler <- function(data) {
@@ -114,7 +126,7 @@ freedom %>% mutate(rights = cl + pr) %>%
   arrange(total_rights) %>% 
   head(n = 20)
 
-# Asya'daki hangi ülkelerde ve yıllarda politik haklar ve sivil özgürlükler 
+# 5.) Asya'daki hangi ülkelerde ve yıllarda politik haklar ve sivil özgürlükler 
 # en düşük idi? Not yalnızca ilgilenilen sütunların çıktısını alın: 
 # Ülke, (sivil özgürlükler + politik haklar) ve yıl (bu sırayla).
 
@@ -124,9 +136,32 @@ freedom %>% filter(region_name == "Asia") %>%
   arrange(desc(total_rights)) %>% 
   head(n = 10)
 
+# 6a.) Sivil özgüürlükler ile politik haklar arasında (her iki yönde de) 
+# en güçlü korelasyona sahip 10 ülke hangileridir?
 
+freedom %>% group_by(region_name, country) %>% 
+  summarise(korelasyon = cor(cl, pr)) %>% 
+  arrange(desc(abs(korelasyon))) %>% 
+  head(10)
 
+# 6b.) Sivil özgüürlükler ile politik haklar arasında (her iki yönde de) 
+# en zayıf korelasyona sahip 10 ülke hangileridir?
 
+freedom %>% group_by(region_name, country) %>% 
+  summarise(cor = cor(cl, pr)) %>% 
+  arrange(abs(cor)) %>% 
+  head(10)
+
+# 7a.) Hangi ülkeler (Avrupa hariç) en yüksek ortalama politik haklar ve sivil
+# özgürlüklere sahiptir? 
+# (İpucu: Özgürlükler != NF ve PF olduğu yerleri filtreleyelim, 
+
+freedom %>% filter(region_name != "Europe" & status != "F") %>% 
+  group_by(region_name, country) %>% 
+  summarise(avg_cl = mean(cl),
+            avg_pr = mean(pr)) %>% 
+  arrange(avg_cl, avg_pr) %>% 
+  head(n = 10)
 
 # Hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
 
