@@ -114,6 +114,18 @@ freedom %>% mutate(rights = cl + pr) %>%
   arrange(total_rights) %>% 
   head(n = 20)
 
+# Asya'daki hangi ülkelerde ve yıllarda politik haklar ve sivil özgürlükler 
+# en düşük idi? Not yalnızca ilgilenilen sütunların çıktısını alın: 
+# Ülke, (sivil özgürlükler + politik haklar) ve yıl (bu sırayla).
+
+freedom %>% filter(region_name == "Asia") %>%
+  mutate(total_rights = cl + pr) %>% 
+  select(year, country, total_rights) %>% 
+  arrange(desc(total_rights)) %>% 
+  head(n = 10)
+
+
+
 
 
 # Hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
