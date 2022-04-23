@@ -276,12 +276,14 @@ kirilgan_besli %>%
   geom_abline(color = "red") + 
   geom_point() + 
   geom_text(aes(label = country), vjust = 1, hjust = 1) +
-  expand_limits(x = 0:5 , y = 0:5, size = 0) +
-  labs(title = "'Kırılgan Beşli' için Ortalama Kişisel Özgürlükler ve \n Ortalama Politikal Haklar Tablosu",
-       subtitle = "(Turkey, Indonesia, India, Brazil, South Africa)",
+  expand_limits(x = 1:7 , y = 1:7, size = 0) +
+  scale_x_continuous(breaks = c(1,2,3,4,5,6,7)) +
+  scale_y_continuous(breaks = c(1,2,3,4,5,6,7)) +
+  labs(title = "Kırılgan Beşli (Fragile Five) için 1995 - 2020 yılları arasında \nOrtalama Kişisel Özgürlükler ve Ortalama Politik Haklar Grafiği",
+       subtitle = "(Türkiye, Endonezya, Hindistan, Brezilya, Güney Afrika)",
        caption = "Source: https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-02-22",
-       x = "Ortalama Kişisel Özgürlükler",
-       y = "Ortalama Politikal Haklar")
+       x = "Ort. Kişisel Özgürlükler (Avg. Civil Liberties)",
+       y = "Ort. Politikal Haklar (Avg. Political Rights)")
   
 freedom %>%
   filter(year == 2020) %>%
@@ -292,13 +294,12 @@ freedom %>%
   expand_limits(x = 0, y = 0, size = 0)
 
 freedom %>%
-  summarize(sd(civil_liberties),
-            sd(political_rights))
-
+  summarise(sd(cl),
+            sd(pr))
 
 freedom %>%
   filter(year == 2020) %>%
-  gather(metric, value, civil_liberties, political_rights) %>%
+  gather(metric, value, cl, pr) %>%
   mutate(metric = str_to_title(str_replace_all(metric, "_", " ")),
          region_name = fct_reorder(region_name, value)) %>%
   count(region_name, metric, value) %>%
