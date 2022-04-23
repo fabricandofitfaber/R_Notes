@@ -94,10 +94,12 @@ freedom %>% filter(year >= 2010) %>%
             ortalama_pr = mean(pr)) %>% 
   arrange(desc(ortalama_cl, ortalama_pr))
   
-# 4.) Tüm yıllar boyunca toplam GSYİH'si en yüksek olan 5 ülke hangisidir? 
+# 4.) Tüm yıllar boyunca en yüksek (sivil özgürlükler*politik haklar) sahibi  
+# olan 5 ülke hangisidir? 
 # (Hint: Mutate, group_by, summarize, arrange, head(n=5)))
-  
-
+   
+freedom %>% mutate(haklar = cl*pr) %>% 
+  group_by()
 
 
 # Hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
