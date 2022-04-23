@@ -200,20 +200,27 @@ freedom %>% distinct(country, region_name)
 
 ## Verisetinden özet istatistikleri almak. ----
 
+# Özet iistatistikleri bir fonksiyon haline getirmek.
+
 summarize_freedom <- function(tbl) {
   tbl %>%
-    summarize(n_countries = n(),
-              avg_civil_liberties = mean(civil_liberties),
-              avg_political_rights = mean(political_rights),
+    summarise(n_countries = n(),
+              avg_civil_liberties = mean(cl),
+              avg_political_rights = mean(pr),
               pct_free = mean(status == "F"),
               .groups = "drop") %>%
     arrange(desc(n_countries))
 }
 
+# Ülkeler, kıtalara göre gruplandığında hangi kıtada kaç ülke vardır ve
+# bu kıtalardaki ortalama sivil özgürlükler, politik haklar ve özgür ülke
+# sayısı kaçtır?
+
 by_region <- freedom %>%
   filter(year == 2020) %>%
   group_by(region_name) %>%
   summarize_freedom()
+
 
 by_region %>%
   ggplot(aes(avg_civil_liberties, avg_political_rights)) +
