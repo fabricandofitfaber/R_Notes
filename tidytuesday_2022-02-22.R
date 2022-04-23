@@ -175,18 +175,30 @@ freedom %>% filter(region_name == c("Europe", "Oceania") & status != "F") %>%
   head(n = 10)
 
 
-# Mevcut verilerin bulunduğu yıllar boyunca en tutarlı politik haklar ve  
-# sivil özgürlüklere (yani en düşük standart sapma) sahip üç ülke hangileridir?
+# Mevcut verilerin bulunduğu yıllar boyunca en tutarsız politik haklar ve  
+# sivil özgürlüklere (yani "en yüksek" standart sapma) sahip üç ülke hangileridir?
 # (Sadece 3,4 ve 5 puana sahip olan ülkeleri filtreleyelim.)
 
+freedom %>% filter(cl %in% 3:5 & pr %in% 3:5) %>% 
+  # filter(between(cl, 3, 5) & between(pr, 3, 5)) # filtrelemede kullanılabilir.
+  freedom %>% group_by(region_name, country) %>% 
+  summarise(ss_pr = sd(pr),
+            ss_cl = sd(cl)) %>% 
+  arrange(desc(ss_pr)) %>% 
+  head(n = 10)
 
+# 9.) Hangi gözlemler bir ülkede sivil özgürlüklerin bir önceki yıla göre  
+# azaldığını ve politik hakların bir önceki yıla göre arttığını göstermektedir?
 
-
-
+freedom %>% arrange(region_name, country, year) %>% 
+  group_by(region_name, country) %>% 
+  filter(cl < lag(cl) & pr > lag(pr))
 
 # Hangi ülkenin, hangi kıtada bulunduğunu görebiliriz.
 
 freedom %>% distinct(country, region_name)
+
+## Verisetinden özet istatistikleri almak. ----
 
 summarize_freedom <- function(tbl) {
   tbl %>%

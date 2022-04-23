@@ -1,6 +1,6 @@
 # Chapter 1: Getting started with R Language ----
 
-## Alt+O ile tüm sekmler kapatılır.
+## Alt+O ile tüm sekmeler kapatılır.
 
 ## https://support.rstudio.com/hc/en-us/articles/200484568-Code-Folding-and-Sections-in-the-RStudio-IDE
 
