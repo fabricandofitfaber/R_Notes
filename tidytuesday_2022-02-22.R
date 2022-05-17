@@ -284,6 +284,8 @@ kirilgan_besli %>%
        caption = "Source: https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-02-22",
        x = "Ort. Kişisel Özgürlükler (Avg. Civil Liberties)",
        y = "Ort. Politikal Haklar (Avg. Political Rights)")
+
+# Kaldığım yer
   
 freedom %>%
   filter(year == 2020) %>%
@@ -309,7 +311,6 @@ freedom %>%
   labs(x = "World Freedom Index rating",
        y = "# of countries",
        title = "Distribution of World Freedom Index by region in 2020")
-
 
 freedom_gathered <- freedom %>%
   gather(metric, value, civil_liberties, political_rights) %>%
