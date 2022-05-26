@@ -350,3 +350,63 @@ african_names %>%
   ggplot(aes(year_arrival, n)) +
   geom_col() +
   facet_wrap(~ gender)
+
+
+census_gathered %>%
+  filter(region != "USA Total", !is.na(division)) %>%
+  mutate(division = fct_reorder(division, -population, sum)) %>%
+  group_by(division, year) %>%
+  mutate(percent = population / sum(population)) %>%
+  ggplot(aes(year, percent, fill = racial_category)) +
+  geom_col() +
+  scale_y_continuous(labels = percent) +
+  facet_wrap(~ division) +
+  labs(x = "Year",
+       y = "% of Census Population",
+       fill = "Racial category",
+       title = "Census racial makeup of US, 1790-1870",
+       subtitle = "No 'other' category existed before 1860")
+
+# Soru 1: Hangi yıllarda hangi cinsiyet dağılımında köle transferi gerçekleşmiştir?
+
+african_names %>% 
+  group_by(gender, year_arrival, ship_name, port_disembark) %>% 
+  count() %>% 
+  filter(!is.na(ship_name), !is.na(gender)) %>% 
+  mutate(percent = n / sum(n)) %>% 
+  ggplot(aes(year_arrival, percent, fill = gender)) +
+  geom_col() +
+  scale_y_continuous(labels = percent) 
+  # facet_wrap(~ port_disembark)
+
+
+# ggwordcloud ----
+
+library(ggwordcloud)
+
+name_counts <- tuesdata$african_names %>%
+  count(name, gender, sort = TRUE)
+
+wordcloud(name_counts$name, name_counts$n)
+
+name_counts %>%
+  head(100) %>%
+  ggplot(aes(label = name, size = n, color = gender)) +
+  geom_text_wordcloud()
+
+# tidytext ----
+
+library(tidytext)
+
+tuesdata$african_names %>%
+  filter(!is.na(gender)) %>%
+  mutate(gender = fct_recode(gender, Man = "Boy", Woman = "Girl")) %>%
+  count(name, gender, sort = TRUE) %>%
+  group_by(gender) %>%
+  top_n(20, n) %>%
+  ungroup() %>%
+  mutate(name = reorder_within(name, n, gender)) %>%
+  ggplot(aes(n, name)) +
+  geom_col() +
+  scale_y_reordered() +
+  facet_wrap(~ gender, scales = "free")
