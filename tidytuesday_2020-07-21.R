@@ -65,8 +65,8 @@ animal_outcomes %>%
 # Tarih formatı nasıl değiştirilir? ----
 
 # Tarih formatına çevirmek
-linelist <- linelist %>% 
-  mutate(date_onset = as.Date(date_of_onset, format = "%d/%m/%Y"))
+# linelist <- linelist %>% 
+  # mutate(date_onset = as.Date(date_of_onset, format = "%d/%m/%Y"))
 
 # %d = Day number of month (5, 17, 28, etc.)
 # %j = Day number of the year (Julian day 001-366)
@@ -88,6 +88,9 @@ linelist <- linelist %>%
 # Çalışmadı.
 animal_complaints <- animal_complaints %>% 
   mutate(date = as.Date(date_received, format = "%B %Y"))
+
+animal_complaints$tarih <- as.Date(animal_complaints$date_received, 
+                                           format = "%B %Y")
 
 animal_complaints <- animal_complaints %>% 
   mutate(date_received = lubridate::my(date_received))
@@ -261,3 +264,79 @@ simplified %>%
   ggthemes::theme_map() +
   labs(fill = "% cats euthanized",
        title = "% of cats euthanized in each province in { current_frame }")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+iller <- read_html("https://tr.wikipedia.org/wiki/T%C3%BCrkiye%27nin_illeri?oldformat=true") %>% 
+  html_table(header = TRUE, fill = TRUE)
+
+ils <- iller[[6]]
+
+library(rvest)
+
+states_territories <- read_html("https://en.wikipedia.org/wiki/States_and_territories_of_Australia") %>%
+  html_nodes(".sortable") %>%
+  map(html_table, fill = TRUE) %>%
+  head(2) %>%
+  map(janitor::clean_names) %>%
+  map(as_tibble)
+
+states <- states_territories[[1]] %>%
+  select(region = state,
+         code = postal,
+         population = contains("population"),
+         area = contains("area"))
+
+territories <- states_territories[[2]] %>%
+  filter(territory != "Jervis Bay Territory") %>%
+  select(region = territory,
+         code = postal,
+         population = contains("population"),
+         area = contains("area"))
+
+state_territory_data <- bind_rows(states, territories) %>%
+  mutate(code = str_to_upper(code),
+         population = readr::parse_number(population),
+         area = readr::parse_number(area))
+
+
+
+
+
+
+
+
+
+
+
+
