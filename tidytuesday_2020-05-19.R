@@ -102,3 +102,150 @@ b_tourn2 <- b_tourn %>%
             yıl = min(year)) %>% 
   arrange(desc(total_matches)) %>% 
   ungroup()
+
+
+
+
+# ggplot grafik----
+
+by_player %>%
+  filter(n_matches >= 200) %>%
+  ggplot(aes(n_matches, pct_winner, color = gender)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_continuous(labels = percent) +
+  labs(x = "# of matches since 2000 (log scale)",
+       y = "% of matches won")
+
+# Soru 1: en erken ve en geç galibiyet alma yaşları neydi? 
+
+by_age <- vb_player_matches %>% 
+  filter(winner_loser == "W") %>% 
+  group_by(name, gender) %>%
+  summarise(toplam_mac = n(),
+            ilk_galibiyet = min(age),
+            son_galibiyet = max(age)) %>% 
+  arrange(desc(toplam_mac)) %>% 
+  ungroup()
+  
+# Soru 2: En erken galibiyet alanları, toplam maç sayılarıyla çizdirelim. 
+# Renklendirme "cinsiyet" kategorisine göre olsun.
+# En az 100 maç yapmış olsun.
+
+by_age %>%
+  filter(toplam_mac >= 100) %>% 
+  ggplot(aes(toplam_mac, ilk_galibiyet, color = gender)) +
+  geom_point() 
+
+# Soru 2: En son galibiyet alanları, toplam maç sayılarıyla çizdirelim. 
+# Renklendirme "cinsiyet" kategorisine göre olsun.
+# En az 100 maç yapmış olsun.
+
+by_age %>% 
+  filter(toplam_mac >= 100) %>% 
+  ggplot(aes(toplam_mac, son_galibiyet, color = gender)) +
+  geom_point() +
+  labs(x = "Toplam Maç sayısı (n >= 100)",
+       y = "Son Galibiyet", 
+       title = "Sprocuların Son Galibiyetini Aldıklara Yaşa Göre Dağılım Grafiği",
+       subtitle = "Cinsiyet kategorisine göre renklendirilmiş",
+       caption = "tidy-tuesday verisi")
+
+# En fazla galibiyet oranına sahip sporcuların listelenmesi ----
+
+by_player %>%
+  filter(n_matches >= 200) %>%
+  arrange(desc(pct_winner))
+
+# Değişkenlerde verinin bulunmadığı durumların oranı ----
+
+vb_player_matches %>%
+  summarize_all(~ mean(!is.na(.))) %>%
+  gather() %>%
+  View()
+
+vb_player_matches %>%
+  group_by(tournament) %>%
+  summarize(pct_has_attacks = mean(!is.na(tot_attacks)),
+            n = n()) %>%
+  arrange(desc(n))
+
+# Soru 1: Her turnuvadaki ortalama yaşı bulalım.
+# Turnuva yaş ortalamasını büyükten küçüğe sıralayalım.
+
+by_yas <- vb_player_matches %>% 
+  filter(!is.na(age)) %>% # yaş değişkeninden NA verileri çıkart 
+  group_by(tournament) %>% 
+  summarise(ort_yas = mean(age), # turnuvadaki ortalama yaşı bulalım.
+            total = n()) %>% 
+  arrange(desc(ort_yas))
+  
+# Diğer bir yolu da şöyle:
+
+by_yas2 <- vb_player_matches %>% 
+  group_by(tournament) %>% 
+  summarise(toplam = n(),
+            ort_yas2 = mean(age, na.rm = TRUE)) %>% # yaş'tan NA verileri çıkart 
+  arrange(desc(ort_yas2))
+
+
+### How would we predict if a player will win in 2019? ----
+
+summarize_players <- . %>%
+  summarize(n_matches = n(),
+            pct_winner = mean(winner_loser == "W"),
+            avg_attacks = mean(tot_attacks, na.rm = TRUE),
+            avg_errors = mean(tot_errors, na.rm = TRUE),
+            avg_serve_errors = mean(tot_serve_errors, na.rm = TRUE),
+            avg_kills = mean(tot_kills, na.rm = TRUE),
+            avg_aces = mean(tot_aces, na.rm = TRUE),
+            n_with_data = sum(!is.na(tot_attacks))) %>%
+  ungroup() %>%
+  arrange(desc(n_matches))
+
+players_before_2019 <- vb_player_matches %>%
+  filter(year < 2019) %>%
+  group_by(name, gender, hgt, birthdate, country) %>%
+  summarize_players() %>%
+  filter(!is.na(avg_attacks))
+
+players_2019 <- vb_player_matches %>%
+  filter(year == 2019) %>%
+  group_by(name, gender, hgt, birthdate, country, year,
+           age = year - year(birthdate)) %>%
+  summarize_players()
+
+
+performance_joined <- players_before_2019 %>%
+  inner_join(players_2019 %>%
+               select(name, n_matches, pct_winner),
+             by = "name",
+             suffix = c("", "_2019"))
+
+performance_joined %>%
+  filter(n_matches >= 10,
+         n_matches_2019 >= 5) %>%
+  ggplot(aes(pct_winner, pct_winner_2019)) +
+  geom_point() +
+  geom_abline(color = "red") +
+  geom_smooth(method = "lm")
+
+performance_joined %>%
+  mutate(n_wins_2019 = n_matches_2019 * pct_winner_2019,
+         country = fct_lump(country, 3)) %>%
+  glm(cbind(n_wins_2019, n_matches_2019 - n_wins_2019) ~
+        pct_winner + avg_errors + avg_serve_errors,
+      data = .,
+      family = "binomial") %>%
+  summary()
+
+players_before_2019 %>%
+  filter(n_with_data >= 20) %>%
+  ggplot(aes(avg_serve_errors, avg_aces, size = n_with_data)) +
+  geom_point() +
+  labs(size = "Matches",
+       title = "DON'T TRUST THIS")
+
+
+player_first_year_summarized %>%
+  filter(!is.nan(avg_attacks))
