@@ -265,38 +265,6 @@ simplified %>%
   labs(fill = "% cats euthanized",
        title = "% of cats euthanized in each province in { current_frame }")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 iller <- read_html("https://tr.wikipedia.org/wiki/T%C3%BCrkiye%27nin_illeri?oldformat=true") %>% 
   html_table(header = TRUE, fill = TRUE)
 
