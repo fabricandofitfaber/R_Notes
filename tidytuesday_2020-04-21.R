@@ -148,6 +148,11 @@ separated_articles %>%
 
 # tidymetrics paketi ----
 
+# install.packages("remotes")
+# library(remotes)
+# install_github("datacamp/tidymetrics")
+
+
 library(tidymetrics)
 
 summarized <- separated_articles %>%
@@ -160,9 +165,6 @@ summarized <- separated_articles %>%
   summarize(nb_violations = n_distinct(id),
             nb_total_fine = sum(price_per_article)) %>%
   ungroup()
-
-gdpr_metrics <- create_metrics(summarized)
-
 
 
 
