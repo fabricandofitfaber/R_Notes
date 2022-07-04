@@ -117,7 +117,113 @@ gr_rating2 <- imdb_2 %>%
   geom_col() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+# Grafik analiz ----
 
+episodes %>%
+  filter(season_number <= 4) %>%
+  ggplot(aes(episode_title, rating)) +
+  geom_line(group = 1) +
+  geom_point(aes(color = factor(season_number))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "",
+       y = "Average rating (IMDb)",
+       title = "Popularity of episodes (Davies years)",
+       fill = "Season")
+
+# Soru 1: Tüm sezonlar boyunca nasıl bir IMDB rating performansı vardı?
+
+imdb_2$date <- as.Date(imdb_2$date)
+
+imdb_2 %>% 
+  # filter(date >= "2020-01-01") %>%
+  # filter(season <= 4) %>% 
+  ggplot(aes(factor(date), rating)) + 
+  geom_line(group = 1) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Grafik analiz 2 ----
+
+episodes %>%
+  filter(!is.na(rating)) %>%
+  ggplot(aes(as.numeric(episode_title), rating)) +
+  geom_line(group = 1) +
+  geom_point(aes(color = factor(season_number))) +
+  geom_text(aes(label = episode_title), hjust = 1, vjust = 1, check_overlap = TRUE) +
+  geom_smooth(method = "loess") +
+  theme(axis.text.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank()) +
+  labs(x = "",
+       y = "Average rating (IMDb)",
+       title = "Rating of episodes over time",
+       color = "Season")
+
+# Soru 3: Zaman içerisinde meydana gelen rating değişimine bakalım.
+# Ama öncelikle yeni bir değişken oluşturalım.
+
+# install.packages("ggpmisc") # statpeaks() komutu için
+library(ggpmisc)
+
+imdb3 <- imdb2 %>% 
+  mutate(season_epsiode = paste0(season, ".", ep_num)) %>% 
+  mutate(season_epsiode = fct_reorder(season_epsiode, date))
+
+imdb3 %>% 
+  ggplot(aes(as.numeric(season_epsiode), rating)) +
+  geom_smooth(method = "loess") +
+  geom_line(group = 1) +
+  geom_point(aes(color = factor(season))) +
+  stat_peaks(colour = "red") +
+  stat_peaks(geom = "text", colour = "blue", vjust = -0.5, 
+             check_overlap = TRUE, span = NULL) +
+  stat_valleys(colour = "red") +
+  stat_valleys(geom = "text", colour = "red", vjust = 0.5,
+               check_overlap = TRUE, span = NULL) 
+
+# Grafik analiz 3 ----
+
+episodes %>%
+  ggplot(aes(as.numeric(episode_title), uk_viewers, fill = factor(season_number))) +
+  geom_col() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "",
+       y = "# of UK viewers (millions)",
+       title = "UK Viewers per episode of Doctor Who (Davies years)",
+       fill = "Season")
+
+# t-test ----
+
+summarize_episodes <- function(tbl) {
+  tbl %>%
+    summarize(avg_rating = mean(rating, na.rm = TRUE),
+              avg_viewers = mean(uk_viewers, na.rm = TRUE),
+              n_episodes = n(),
+              t_test = list(broom::tidy(t.test(rating[!is.na(rating)])))) %>%
+    unnest(t_test)
+}
+
+episodes %>%
+  group_by(season_number) %>%
+  summarize_episodes()
+
+
+
+# Soru 1: Özet istatistikler için fonksiyon oluşturalım.
+
+descriptive_stats <- function(descriptive) {
+  descriptive %>% 
+    summarise(avg_rates = mean(rating, na.rm = TRUE),
+              avg_rates_n = mean(rating_n, na.rm = TRUE),
+              total_episodes = n(),
+              t_test = list(broom::tidy(t.test(rating[!is.na(rating)])))) %>% 
+    unnest(t_test)
+}
+
+
+imdb3 %>% 
+  group_by(season) %>% 
+  descriptive_stats()
 
 
 
